@@ -135,6 +135,10 @@ angular.module('mapChat').controller('MapController',
 
       };
 
+      $scope.toggleMenu = function() {
+        $scope.sideMenuController.toggleLeft();
+      }
+
     }])
 
   .controller('AccountCtrl', function ($scope, $state, Auth) {
