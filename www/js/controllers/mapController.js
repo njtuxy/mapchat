@@ -134,9 +134,19 @@ angular.module('mapChat').controller('MapController',
           $scope.map.markers[0] = {
             lat: location.latitude,
             lng: location.longitude,
-            message: "I am a message",
+            message: "<div ng-include src=\"'templates/marker/marker_popup.html'\"></div>",
             focus: true,
-            draggable: false
+            draggable: false,
+            icon: {
+              iconUrl: 'img/ping.png',
+              //iconSize:     [38, 95], // size of the icon
+              iconAnchor: [28, 13] // point of the icon which will
+              //type: 'awesomeMarker',
+              //icon: 'coffee',
+              //markerColor: 'red'
+              //markerColor: 'red'
+            }
+
           };
 
         })
