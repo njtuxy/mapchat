@@ -18,19 +18,6 @@ angular.module('mapChat').controller('MapController',
        * Once state loaded, get put map on scope.
        */
       $scope.$on("$stateChangeSuccess", function () {
-        //if (!InstructionsService.instructions.newLocations.seen) {
-        //
-        //  var instructionsPopup = $ionicPopup.alert({
-        //    title: 'Add Locations',
-        //    template: InstructionsService.instructions.newLocations.text
-        //  });
-        //  instructionsPopup.then(function (res) {
-        //    InstructionsService.instructions.newLocations.seen = true;
-        //  });
-        //
-        //}
-
-
         $scope.map = {
           defaults: {
             tileLayer: 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
@@ -50,44 +37,9 @@ angular.module('mapChat').controller('MapController',
         $scope.goToCurrentLocation();
       });
 
-      //var Location = function () {
-      //  if (!(this instanceof Location)) return new Location();
-      //  this.lat = "";
-      //  this.lng = "";
-      //  this.name = "";
-      //};
-
-      //$ionicModal.fromTemplateUrl('templates/addLocation.html', {
-      //  scope: $scope,
-      //  animation: 'slide-in-up'
-      //}).then(function (modal) {
-      //  $scope.modal = modal;
-      //});
-
-      /**
-       * Detect user long-pressing on map to add new location
-       */
-      //$scope.$on('leafletDirectiveMap.contextmenu', function (event, locationEvent) {
-      //  $scope.newLocation = new Location();
-      //  $scope.newLocation.lat = locationEvent.leafletEvent.latlng.lat;
-      //  $scope.newLocation.lng = locationEvent.leafletEvent.latlng.lng;
-      //  $scope.modal.show();
-      //});
-      //
-      //$scope.saveLocation = function () {
-      //  LocationsService.savedLocations.push($scope.newLocation);
-      //  $scope.modal.hide();
-      //  $scope.goToCurrentLocation(LocationsService.savedLocations.length - 1);
-      //};
-
-      /**
-       * Center map on specific saved location
-       * @param locationKey
-       */
       $scope.goToCurrentLocation = function () {
 
         getCurrentLocation.then(function (current_position) {
-          //var location = LocationsService.savedLocations[locationKey];
           var location = current_position.coords;
 
           $scope.map.center = {
@@ -119,10 +71,6 @@ angular.module('mapChat').controller('MapController',
     }])
 
   .controller('AccountCtrl', function ($scope, $state, Auth) {
-    //$scope.settings = {
-    //  enableFriends: true
-    //};
-
     $scope.login = function (email, pass) {
       $scope.err = null;
       Auth.$authWithPassword({email: email, password: pass}, {rememberMe: true})
