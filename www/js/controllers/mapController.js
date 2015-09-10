@@ -5,6 +5,7 @@ angular.module('mapChat').controller('MapController',
     '$ionicModal',
     '$ionicPopup',
     'LocationsService',
+    'getCurrentLocation',
     'InstructionsService',
     '$rootScope',
     function ($scope,
@@ -13,12 +14,15 @@ angular.module('mapChat').controller('MapController',
               $ionicModal,
               $ionicPopup,
               LocationsService,
+              getCurrentLocation,
               InstructionsService) {
 
       /**
        * Once state loaded, get put map on scope.
        */
       $scope.$on("$stateChangeSuccess", function () {
+
+
 
         //$scope.locations = LocationsService.savedLocations;
         //$scope.newLocation;
@@ -35,6 +39,8 @@ angular.module('mapChat').controller('MapController',
         //
         //}
 
+
+
         $scope.map = {
           defaults: {
             tileLayer: 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
@@ -47,10 +53,35 @@ angular.module('mapChat').controller('MapController',
               enable: ['context'],
               logic: 'emit'
             }
+          },
+          center:{
           }
         };
 
-        $scope.goTo(0);
+        //getCurrentLocation.then(function (current_position) {
+        //  //var location = LocationsService.savedLocations[locationKey];
+        //  var location = current_position.coords;
+        //  console.log(current_position);
+        //
+        //  $scope.map.center = {
+        //    lat: location.latitude,
+        //    lng: location.longitude,
+        //    zoom: 12
+        //  };
+        //
+        //  $scope.map.markers = {
+        //    lat: location.latitude,
+        //    lng: location.longitude,
+        //    message: "I am a message",
+        //    focus: true,
+        //    draggable: false
+        //  };
+        //
+        //});
+
+
+        $scope.goToCurrentLocation(0);
+        //$scope.locate();
 
       });
 
@@ -81,30 +112,36 @@ angular.module('mapChat').controller('MapController',
       $scope.saveLocation = function () {
         LocationsService.savedLocations.push($scope.newLocation);
         $scope.modal.hide();
-        $scope.goTo(LocationsService.savedLocations.length - 1);
+        $scope.goToCurrentLocation(LocationsService.savedLocations.length - 1);
       };
 
       /**
        * Center map on specific saved location
        * @param locationKey
        */
-      $scope.goTo = function (locationKey) {
+      $scope.goToCurrentLocation = function () {
 
-        var location = LocationsService.savedLocations[locationKey];
+        getCurrentLocation.then(function (current_position) {
+          //var location = LocationsService.savedLocations[locationKey];
+          var location = current_position.coords;
+          console.log(current_position);
 
-        $scope.map.center = {
-          lat: location.lat,
-          lng: location.lng,
-          zoom: 12
-        };
+          $scope.map.center = {
+            lat: location.latitude,
+            lng: location.longitude,
+            zoom: 16
+          };
 
-        $scope.map.markers[locationKey] = {
-          lat: location.lat,
-          lng: location.lng,
-          message: location.name,
-          focus: true,
-          draggable: false
-        };
+          $scope.map.markers[0] = {
+            lat: location.latitude,
+            lng: location.longitude,
+            message: "I am a message",
+            focus: true,
+            draggable: false
+          };
+
+        })
+
 
       };
 
@@ -135,7 +172,7 @@ angular.module('mapChat').controller('MapController',
 
       };
 
-      $scope.toggleMenu = function() {
+      $scope.toggleMenu = function () {
         $scope.sideMenuController.toggleLeft();
       }
 
