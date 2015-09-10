@@ -49,6 +49,6 @@ angular.module('mapChat', ['ionic', 'leaflet-directive', 'firebase.auth', 'ngCor
       });
 
 
-    $urlRouterProvider.otherwise('/app/map');
+    $urlRouterProvider.otherwise('/app/login');
 
   });

@@ -4,7 +4,6 @@ angular.module('mapChat').controller('MapController',
     '$stateParams',
     '$ionicModal',
     '$ionicPopup',
-    'LocationsService',
     'getCurrentLocation',
     'InstructionsService',
     '$rootScope',
@@ -13,9 +12,7 @@ angular.module('mapChat').controller('MapController',
               $stateParams,
               $ionicModal,
               $ionicPopup,
-              LocationsService,
-              getCurrentLocation,
-              InstructionsService) {
+              getCurrentLocation) {
 
       /**
        * Once state loaded, get put map on scope.
@@ -78,40 +75,40 @@ angular.module('mapChat').controller('MapController',
         //});
 
 
-        $scope.goToCurrentLocation();
+        //$scope.goToCurrentLocation();
         //$scope.locate();
 
       });
 
-      var Location = function () {
-        if (!(this instanceof Location)) return new Location();
-        this.lat = "";
-        this.lng = "";
-        this.name = "";
-      };
+      //var Location = function () {
+      //  if (!(this instanceof Location)) return new Location();
+      //  this.lat = "";
+      //  this.lng = "";
+      //  this.name = "";
+      //};
 
-      $ionicModal.fromTemplateUrl('templates/addLocation.html', {
-        scope: $scope,
-        animation: 'slide-in-up'
-      }).then(function (modal) {
-        $scope.modal = modal;
-      });
+      //$ionicModal.fromTemplateUrl('templates/addLocation.html', {
+      //  scope: $scope,
+      //  animation: 'slide-in-up'
+      //}).then(function (modal) {
+      //  $scope.modal = modal;
+      //});
 
       /**
        * Detect user long-pressing on map to add new location
        */
-      $scope.$on('leafletDirectiveMap.contextmenu', function (event, locationEvent) {
-        $scope.newLocation = new Location();
-        $scope.newLocation.lat = locationEvent.leafletEvent.latlng.lat;
-        $scope.newLocation.lng = locationEvent.leafletEvent.latlng.lng;
-        $scope.modal.show();
-      });
-
-      $scope.saveLocation = function () {
-        LocationsService.savedLocations.push($scope.newLocation);
-        $scope.modal.hide();
-        $scope.goToCurrentLocation(LocationsService.savedLocations.length - 1);
-      };
+      //$scope.$on('leafletDirectiveMap.contextmenu', function (event, locationEvent) {
+      //  $scope.newLocation = new Location();
+      //  $scope.newLocation.lat = locationEvent.leafletEvent.latlng.lat;
+      //  $scope.newLocation.lng = locationEvent.leafletEvent.latlng.lng;
+      //  $scope.modal.show();
+      //});
+      //
+      //$scope.saveLocation = function () {
+      //  LocationsService.savedLocations.push($scope.newLocation);
+      //  $scope.modal.hide();
+      //  $scope.goToCurrentLocation(LocationsService.savedLocations.length - 1);
+      //};
 
       /**
        * Center map on specific saved location
@@ -156,9 +153,20 @@ angular.module('mapChat').controller('MapController',
        * Center map on user's current position
        */
       $scope.locate = function () {
-        $cordovaGeolocation
-          .getCurrentPosition()
+        var posOptions = {timeout: 10000, enableHighAccuracy: false};
+        var lat = null;
+        var lng = null;
+        console.log("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++start");
+        console.log($cordovaGeolocation);
+        console.log("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++end");
+
+        $cordovaGeolocation.getCurrentPosition(posOptions)
           .then(function (position) {
+            console.log("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++start");
+            console.log(position.coords.latitude);
+            console.log(position.coords.longitude);
+            console.log("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++end");
+
             $scope.map.center.lat = position.coords.latitude;
             $scope.map.center.lng = position.coords.longitude;
             $scope.map.center.zoom = 15;
@@ -173,22 +181,24 @@ angular.module('mapChat').controller('MapController',
 
           }, function (err) {
             // error
+            console.log("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++locat1");
             console.log("Location error!");
             console.log(err);
           });
-
+        console.log("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++locat2");
+        console.log(posOptions);
       };
 
-      $scope.toggleMenu = function () {
-        $scope.sideMenuController.toggleLeft();
-      }
+      //$scope.toggleMenu = function () {
+      //  $scope.sideMenuController.toggleLeft();
+      //}
 
     }])
 
   .controller('AccountCtrl', function ($scope, $state, Auth) {
-    $scope.settings = {
-      enableFriends: true
-    };
+    //$scope.settings = {
+    //  enableFriends: true
+    //};
 
     $scope.login = function (email, pass) {
       $scope.err = null;
@@ -210,7 +220,7 @@ angular.module('mapChat').controller('MapController',
       alert("Greet");
     };
 
-   //Triggered on a button click, or some other target
+    //Triggered on a button click, or some other target
     $scope.showPopup = function () {
       $scope.data = {};
 
