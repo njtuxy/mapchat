@@ -80,7 +80,7 @@ angular.module('mapChat').controller('MapController',
         //});
 
 
-        $scope.goToCurrentLocation(0);
+        $scope.goToCurrentLocation();
         //$scope.locate();
 
       });
@@ -124,7 +124,6 @@ angular.module('mapChat').controller('MapController',
         getCurrentLocation.then(function (current_position) {
           //var location = LocationsService.savedLocations[locationKey];
           var location = current_position.coords;
-          console.log(current_position);
 
           $scope.map.center = {
             lat: location.latitude,
