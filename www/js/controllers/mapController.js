@@ -18,12 +18,6 @@ angular.module('mapChat').controller('MapController',
        * Once state loaded, get put map on scope.
        */
       $scope.$on("$stateChangeSuccess", function () {
-
-
-
-        //$scope.locations = LocationsService.savedLocations;
-        //$scope.newLocation;
-
         //if (!InstructionsService.instructions.newLocations.seen) {
         //
         //  var instructionsPopup = $ionicPopup.alert({
@@ -53,31 +47,7 @@ angular.module('mapChat').controller('MapController',
           center: {}
         };
 
-        //getCurrentLocation.then(function (current_position) {
-        //  //var location = LocationsService.savedLocations[locationKey];
-        //  var location = current_position.coords;
-        //  console.log(current_position);
-        //
-        //  $scope.map.center = {
-        //    lat: location.latitude,
-        //    lng: location.longitude,
-        //    zoom: 12
-        //  };
-        //
-        //  $scope.map.markers = {
-        //    lat: location.latitude,
-        //    lng: location.longitude,
-        //    message: "I am a message",
-        //    focus: true,
-        //    draggable: false
-        //  };
-        //
-        //});
-
-
-        //$scope.goToCurrentLocation();
-        //$scope.locate();
-
+        $scope.goToCurrentLocation();
       });
 
       //var Location = function () {
@@ -145,54 +115,7 @@ angular.module('mapChat').controller('MapController',
           };
 
         })
-
-
       };
-
-      /**
-       * Center map on user's current position
-       */
-      $scope.locate = function () {
-        var posOptions = {timeout: 10000, enableHighAccuracy: false};
-        var lat = null;
-        var lng = null;
-        console.log("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++start");
-        console.log($cordovaGeolocation);
-        console.log("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++end");
-
-        $cordovaGeolocation.getCurrentPosition(posOptions)
-          .then(function (position) {
-            console.log("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++start");
-            console.log(position.coords.latitude);
-            console.log(position.coords.longitude);
-            console.log("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++end");
-
-            $scope.map.center.lat = position.coords.latitude;
-            $scope.map.center.lng = position.coords.longitude;
-            $scope.map.center.zoom = 15;
-
-            $scope.map.markers.now = {
-              lat: position.coords.latitude,
-              lng: position.coords.longitude,
-              message: "You Are Here",
-              focus: true,
-              draggable: false
-            };
-
-          }, function (err) {
-            // error
-            console.log("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++locat1");
-            console.log("Location error!");
-            console.log(err);
-          });
-        console.log("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++locat2");
-        console.log(posOptions);
-      };
-
-      //$scope.toggleMenu = function () {
-      //  $scope.sideMenuController.toggleLeft();
-      //}
-
     }])
 
   .controller('AccountCtrl', function ($scope, $state, Auth) {
