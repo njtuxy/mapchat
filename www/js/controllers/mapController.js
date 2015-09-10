@@ -1,74 +1,73 @@
-angular.module('mapChat').controller('MapController',
-  ['$scope',
-    '$cordovaGeolocation',
-    '$stateParams',
-    '$ionicModal',
-    '$ionicPopup',
-    'getCurrentLocation',
-    'InstructionsService',
-    '$rootScope',
-    function ($scope,
-              $cordovaGeolocation,
-              $stateParams,
-              $ionicModal,
-              $ionicPopup,
-              getCurrentLocation) {
+angular.module('mapChat.controller', ['firebase.helper'])
 
-      /**
-       * Once state loaded, get put map on scope.
-       */
-      $scope.$on("$stateChangeSuccess", function () {
-        $scope.map = {
-          defaults: {
-            tileLayer: 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-            maxZoom: 18,
-            zoomControlPosition: 'bottomleft'
-          },
-          markers: {},
-          events: {
-            map: {
-              enable: ['context'],
-              logic: 'emit'
-            }
-          },
-          center: {}
+  .controller('MapController',
+  function ($scope,
+            $cordovaGeolocation,
+            $stateParams,
+            $ionicModal,
+            $ionicPopup,
+            getCurrentLocation,
+            geoFireService) {
+
+    /**
+     * Once state loaded, get put map on scope.
+     */
+
+    $scope.$on("$stateChangeSuccess", function () {
+      $scope.map = {
+        defaults: {
+          tileLayer: 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+          maxZoom: 18,
+          zoomControlPosition: 'bottomleft'
+        },
+        markers: {},
+        events: {
+          map: {
+            enable: ['context'],
+            logic: 'emit'
+          }
+        },
+        center: {}
+      };
+
+      $scope.centerMapToCurrentLocation();
+    });
+
+    $scope.centerMapToCurrentLocation = function () {
+      getCurrentLocation.then(function (current_position) {
+        var location = current_position.coords;
+        var lat = location.latitude;
+        var lng = location.longitude;
+
+        geoFireService.set('location', [lat,lng]);
+
+        $scope.map.center = {
+          lat: lat,
+          lng: lng,
+          zoom: 16
         };
 
-        $scope.goToCurrentLocation();
-      });
+        $scope.map.markers[0] = {
+          lat: lat,
+          lng: lng,
+          message: "<div ng-include src=\"'templates/marker/marker_popup.html'\"></div>",
+          focus: true,
+          draggable: false,
+          icon: {
+            iconUrl: 'img/ping.png',
+            //iconSize:     [38, 95], // size of the icon
+            iconAnchor: [28, 13] // point of the icon which will
+            //type: 'awesomeMarker',
+            //icon: 'coffee',
+            //markerColor: 'red'
+            //markerColor: 'red'
+          }
 
-      $scope.goToCurrentLocation = function () {
+        };
 
-        getCurrentLocation.then(function (current_position) {
-          var location = current_position.coords;
-
-          $scope.map.center = {
-            lat: location.latitude,
-            lng: location.longitude,
-            zoom: 16
-          };
-
-          $scope.map.markers[0] = {
-            lat: location.latitude,
-            lng: location.longitude,
-            message: "<div ng-include src=\"'templates/marker/marker_popup.html'\"></div>",
-            focus: true,
-            draggable: false,
-            icon: {
-              iconUrl: 'img/ping.png',
-              //iconSize:     [38, 95], // size of the icon
-              iconAnchor: [28, 13] // point of the icon which will
-              //type: 'awesomeMarker',
-              //icon: 'coffee',
-              //markerColor: 'red'
-              //markerColor: 'red'
-            }
-
-          };
-
-        })
-      };
-    }])
+      })
+    };
+  })
 
   .controller('AccountCtrl', function ($scope, $state, Auth) {
     $scope.login = function (email, pass) {

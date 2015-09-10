@@ -7,7 +7,7 @@ angular.module('mapChat')
       });
 
     return def.promise;
-  })
+  });
 
   //.factory('saveLocationToFirebase', function () {
   //
