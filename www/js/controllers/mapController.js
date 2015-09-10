@@ -40,7 +40,6 @@ angular.module('mapChat').controller('MapController',
         //}
 
 
-
         $scope.map = {
           defaults: {
             tileLayer: 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
@@ -54,8 +53,7 @@ angular.module('mapChat').controller('MapController',
               logic: 'emit'
             }
           },
-          center:{
-          }
+          center: {}
         };
 
         //getCurrentLocation.then(function (current_position) {
@@ -205,4 +203,44 @@ angular.module('mapChat').controller('MapController',
     $scope.logout = function () {
       Auth.$unauth();
     }
+  })
+
+  .controller('MarkerController', function ($scope, $ionicPopup, $timeout) {
+    $scope.greet = function (user) {
+      alert("Greet");
+    };
+
+   //Triggered on a button click, or some other target
+    $scope.showPopup = function () {
+      $scope.data = {};
+
+      // An elaborate, custom popup
+      var myPopup = $ionicPopup.show({
+        template: '<input type="password" ng-model="data.wifi">',
+        title: 'Enter Wi-Fi Password',
+        subTitle: 'Please use normal things',
+        scope: $scope,
+        buttons: [
+          {text: 'Cancel'},
+          {
+            text: '<b>Save</b>',
+            type: 'button-positive',
+            onTap: function (e) {
+              if (!$scope.data.wifi) {
+                //don't allow the user to close unless he enters wifi password
+                e.preventDefault();
+              } else {
+                return $scope.data.wifi;
+              }
+            }
+          }
+        ]
+      });
+      myPopup.then(function (res) {
+        console.log('Tapped!', res);
+      });
+      $timeout(function () {
+        myPopup.close(); //close the popup after 3 seconds for some reason
+      }, 3000);
+    };
   });
