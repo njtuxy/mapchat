@@ -1,4 +1,5 @@
 angular.module('mapChat')
+
   .factory('getCurrentLocation', function ($cordovaGeolocation, $q) {
     var def = $q.defer();
     $cordovaGeolocation.getCurrentPosition()

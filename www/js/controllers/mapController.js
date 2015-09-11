@@ -1,4 +1,4 @@
-angular.module('mapChat.controller', ['firebase.helper'])
+angular.module('mapChat.controller', ['firebase.helper', 'firebase.utils'])
 
   .controller('MapController',
   function ($scope,
@@ -38,7 +38,9 @@ angular.module('mapChat.controller', ['firebase.helper'])
     function setMap(location) {
       var lat = location.latitude;
       var lng = location.longitude;
-      geoFireService.set('location', [lat, lng]);
+
+      //Need to update the service to new one!
+      //geoFireService.set('location', [lat, lng]);
 
       $scope.map.center = {
         lat: lat,
@@ -148,12 +150,14 @@ angular.module('mapChat.controller', ['firebase.helper'])
         .then(function (/* user */) {
           $state.go('app.map');
         }, function (err) {
-          $scope.err = errMessage(err);
+          console.log(err);
+          //$scope.err = errMessage(err);
         });
     };
 
     $scope.logout = function () {
       Auth.$unauth();
+      console.log('logged out!')
     }
   })
 
@@ -195,4 +199,15 @@ angular.module('mapChat.controller', ['firebase.helper'])
         myPopup.close(); //close the popup after 3 seconds for some reason
       }, 3000);
     };
-  });
+  })
+
+  .controller('AddLocationCtrl', function ($scope, Auth, fbGeoService) {
+    var authData = Auth.$getAuth();
+    if(authData){
+      $scope.currentLoginAs = authData.uid;
+      $scope.addLocation = function (lat, lng) {
+        fbGeoService.set(Auth, 'location', [parseFloat(lat), parseFloat(lng)]);
+      }
+    }
+  })
+;
