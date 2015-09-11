@@ -16,5 +16,10 @@ angular.module('firebase.helper', ['firebase', 'firebase.utils', 'angularGeoFire
     this.get = function(key){
       return geo.$get(key);
     };
+
+    this.query = function(center, radius){
+      return geo.$query(center, radius)
+    }
   })
+
 ;
