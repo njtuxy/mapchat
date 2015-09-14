@@ -148,6 +148,7 @@ angular.module('mapChat.controller', ['firebase.helper', 'firebase.utils'])
       $scope.err = null;
       Auth.$authWithPassword({email: email, password: pass}, {rememberMe: true})
         .then(function (/* user */) {
+          console.log('logged in!');
           $state.go('app.map');
         }, function (err) {
           console.log(err);
@@ -201,13 +202,71 @@ angular.module('mapChat.controller', ['firebase.helper', 'firebase.utils'])
     };
   })
 
-  .controller('AddLocationCtrl', function ($scope, Auth, fbGeoService) {
+  .controller('AddLocationCtrl', function ($rootScope, $scope, Auth, fbGeoService, $geofire, fbutil, $firebaseArray) {
     var authData = Auth.$getAuth();
+    $scope.currentLoginAs = authData.uid;
+    var geo = $geofire(fbutil.ref("/locations"));
+
+    var query = geo.$query({
+      center:[37.785584, -122.39923],
+      radius: 10
+    });
+
+    //$scope.showQuery = query;
+    //console.log(query);
+
+    var geoQueryCallback = query.on("key_entered", "SEARCH:KEY_ENTERED");
+    var geoQueryCallback1 = query.on("key_moved", "SEARCH:KEY_MOVED");
+
+    $scope.$on("SEARCH:KEY_ENTERED", function (event, key, location, distance) {
+      console.log("KEY ENTERED FOUND");
+      // Do something interesting with object
+      //$scope.searchResults.push({key: key, location: location, distance: distance});
+      console.log(event);
+      console.log(key);
+      console.log(location);
+
+      // Cancel the query if the distance is > 5 km
+      if(distance > 15) {
+        geoQueryCallback.cancel();
+      }
+    });
+
+    $scope.$on("SEARCH:KEY_MOVED", function (event, key, location, distance) {
+      console.log("KEY MOVED FOUND");
+      // Do something interesting with object
+      //$scope.searchResults.push({key: key, location: location, distance: distance});
+      console.log(event);
+      console.log(key);
+      console.log(location);
+
+      // Cancel the query if the distance is > 5 km
+      if(distance > 15) {
+        geoQueryCallback1.cancel();
+      }
+    });
+
+
+    query.on("key_entered", function (key, location) {
+      console.log(key + " entered query at ");
+    });
+
+    query.on("key_moved", function (key, location) {
+      console.log(key + " entered query at " + location);
+    });
+
+
     if(authData){
       $scope.currentLoginAs = authData.uid;
       $scope.addLocation = function (lat, lng) {
-        fbGeoService.set(Auth, 'location', [parseFloat(lat), parseFloat(lng)]);
-      }
+        fbGeoService.set(Auth, [parseFloat(lat), parseFloat(lng)]);
+        console.log('location added!');
+      };
+      $scope.getLocation = function(){
+        fbGeoService.get(Auth);
+      };
+
+      //$scope.showQuery = fbGeoService.queryR(Auth);
     }
   })
 ;

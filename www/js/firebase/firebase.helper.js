@@ -23,11 +23,48 @@ angular.module('firebase.helper', ['firebase', 'firebase.utils', 'angularGeoFire
   })
 
   .service('fbGeoService', function (fbutil, $firebaseArray, $geofire) {
-    this.set = function (auth, key, location) {
+    this.set = function (auth, location) {
       var authData = auth.$getAuth();
-      var geo = $geofire(fbutil.ref("users/" + authData.uid));
-      geo.$set(key, location);
+      console.log(authData.uid.toString());
+      var geo = $geofire(fbutil.ref("locations/"));
+      geo.$set(authData.uid.toString(), location);
     };
+
+    this.get = function(auth){
+      var authData = auth.$getAuth();
+      var geo = $geofire(fbutil.ref("locations/"));
+      geo.$get(authData.uid.toString()).then(function(location){
+        if (location === null) {
+          console.log("Provided key is not in GeoFire");
+        }
+        else {
+          console.log("Provided key has a location of " + location);
+        }
+      }, function(error) {
+        console.log("Error: " + error);
+      });
+    };
+
+    //this.queryR = function (auth) {
+    //  var authData = auth.$getAuth();
+    //  var geo = $geofire(fbutil.ref("users/" + authData.uid));
+    //  var query = geo.$query({
+    //    center: [37.785583, 122.399219],
+    //    radius: 20
+    //  });
+    //
+    //  console.log(query);
+    //
+    //  query.on("key_entered", function (key, location, distance) {
+    //    console.log(key + " entered query at " + location + " (" + distance + " km from center)");
+    //  });
+    //
+    //  query.on("key_moved", function (key, location) {
+    //    console.log(key + " entered query at " + location);
+    //  });
+    //
+    //  return query;
+    //}
 
 
   })
