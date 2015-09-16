@@ -7,32 +7,113 @@ angular.module('mapChat.controller', ['firebase.helper', 'firebase.utils'])
             $ionicModal,
             $ionicPopup,
             getCurrentLocation,
-            geoWatchLocationService,
-            geoFireService) {
+            $rootScope) {
 
     /**
      * Once state loaded, get put map on scope.
      */
 
+      //angular.extend($scope, {
+      //  defaults: {
+      //    tileLayer: 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+      //    maxZoom: 18,
+      //    zoomControlPosition: 'bottomleft'
+      //  },
+      //
+      //  kabam: {
+      //    lat: 37.782287,
+      //    lng: -122.400634,
+      //    zoom: 15
+      //  },
+      //  markers: {}
+      //});
+
+      $scope.addMarkers = function () {
+        console.log('in add Marker function');
+        //Read other users' locations, and create markers on their locations.
+        //Can be extended, more features can be added to this function.
+        var otherUsers = $rootScope.otherUsersLocations;
+        var markers = {};
+        for (i = 0; i < otherUsers.length; i++) {
+          var key = 'm' + i;
+          var location = otherUsers[i].location;
+          markers[key] = {lat: location[0], lng: location[1], message: "I am " + key};
+        }
+        $scope.markers = markers;
+      };
+      //
+      //$scope.addMarkers();
+
     $scope.$on("$stateChangeSuccess", function () {
-      $scope.map = {
-        defaults: {
-          tileLayer: 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-          maxZoom: 18,
-          zoomControlPosition: 'bottomleft'
-        },
-        markers: {},
-        events: {
-          map: {
-            enable: ['context'],
-            logic: 'emit'
-          }
-        },
-        center: {}
+      //angular.extend($scope, {
+      //  defaults: {
+      //    tileLayer: 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+      //    maxZoom: 18,
+      //    zoomControlPosition: 'bottomleft'
+      //  },
+      //
+      //  kabam: {
+      //    lat: 37.782287,
+      //    lng: -122.400634,
+      //    zoom: 15
+      //  },
+      //  markers: {}
+      //});
+
+      //$scope.addMarkers = function () {
+      //  //Read other users' locations, and create markers on their locations.
+      //  //Can be extended, more features can be added to this function.
+      //  var otherUsers = $rootScope.otherUsersLocations;
+      //  var markers = {};
+      //  for (i = 0; i < otherUsers.length; i++) {
+      //    var key = 'm' + i;
+      //    var location = otherUsers[i].location;
+      //    markers[key] = {lat: location[0], lng: location[1], message: "I am " + key};
+      //  }
+      //  $scope.markers = markers;
+      //
+      //};
+      //
+      //$scope.addMarkers();
+
+      //var lat, lng;
+
+      $scope.getCurrentPosition1 = function () {
+        getCurrentLocation.then(function (current_position) {
+          var location = current_position.coords;
+          $scope.lat = location.latitude;
+          $scope.lng = location.longitude;
+          $scope.addMarkers();
+          setMap1();
+        });
       };
 
+      $scope.getCurrentPosition1();
+      function setMap1() {
+        $scope.map = {
+          defaults: {
+            tileLayer: 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+            maxZoom: 18,
+            zoomControlPosition: 'bottomleft'
+          },
+          markers: $scope.markers,
+          events: {
+            map: {
+              enable: ['context'],
+              logic: 'emit'
+            }
+          },
+          center: {
+            lat: $scope.lat,
+            lng: $scope.lng,
+            zoom: 16
+          }
+        };
+      }
+
+
       //$scope.centerMapToCurrentLocation();
-      $scope.watchCurrentPosition();
+      //$scope.watchCurrentPosition();
     });
 
     function setMap(location) {
@@ -202,71 +283,30 @@ angular.module('mapChat.controller', ['firebase.helper', 'firebase.utils'])
     };
   })
 
-  .controller('AddLocationCtrl', function ($rootScope, $scope, Auth, fbGeoService, $geofire, fbutil, $firebaseArray) {
+  .controller('AddLocationCtrl', function ($rootScope, $scope, Auth, fbGeoService) {
+
+    //var center = [37.785584, -122.39923];
+
+    var center = [37.953757,-122.076692];
+    var radius = 10;
+    var maxDistance = 12;
+
+    fbGeoService.queryLocation(center, radius, maxDistance);
+
+    fbGeoService.get(Auth);
+
+    //DEBUG PURPOSE, REMOVE WHOLE SECTION LATER!
     var authData = Auth.$getAuth();
     $scope.currentLoginAs = authData.uid;
-    var geo = $geofire(fbutil.ref("/locations"));
-
-    var query = geo.$query({
-      center:[37.785584, -122.39923],
-      radius: 10
-    });
-
-    //$scope.showQuery = query;
-    //console.log(query);
-
-    var geoQueryCallback = query.on("key_entered", "SEARCH:KEY_ENTERED");
-    var geoQueryCallback1 = query.on("key_moved", "SEARCH:KEY_MOVED");
-
-    $scope.$on("SEARCH:KEY_ENTERED", function (event, key, location, distance) {
-      console.log("KEY ENTERED FOUND");
-      // Do something interesting with object
-      //$scope.searchResults.push({key: key, location: location, distance: distance});
-      console.log(event);
-      console.log(key);
-      console.log(location);
-
-      // Cancel the query if the distance is > 5 km
-      if(distance > 15) {
-        geoQueryCallback.cancel();
-      }
-    });
-
-    $scope.$on("SEARCH:KEY_MOVED", function (event, key, location, distance) {
-      console.log("KEY MOVED FOUND");
-      // Do something interesting with object
-      //$scope.searchResults.push({key: key, location: location, distance: distance});
-      console.log(event);
-      console.log(key);
-      console.log(location);
-
-      // Cancel the query if the distance is > 5 km
-      if(distance > 15) {
-        geoQueryCallback1.cancel();
-      }
-    });
-
-
-    query.on("key_entered", function (key, location) {
-      console.log(key + " entered query at ");
-    });
-
-    query.on("key_moved", function (key, location) {
-      console.log(key + " entered query at " + location);
-    });
-
-
-    if(authData){
+    if (authData) {
       $scope.currentLoginAs = authData.uid;
       $scope.addLocation = function (lat, lng) {
         fbGeoService.set(Auth, [parseFloat(lat), parseFloat(lng)]);
         console.log('location added!');
       };
-      $scope.getLocation = function(){
+      $scope.getLocation = function () {
         fbGeoService.get(Auth);
       };
-
-      //$scope.showQuery = fbGeoService.queryR(Auth);
     }
   })
 ;

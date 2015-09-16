@@ -5,7 +5,7 @@
 // the 2nd parameter is an array of 'requires'
 angular.module('mapChat', ['ionic', 'mapChat.controller','leaflet-directive', 'ngCordova', 'igTruncate'])
 
-  .run(function($ionicPlatform) {
+  .run(function($ionicPlatform, $rootScope) {
     $ionicPlatform.ready(function() {
       // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
       // for form inputs)
@@ -16,6 +16,8 @@ angular.module('mapChat', ['ionic', 'mapChat.controller','leaflet-directive', 'n
       if(window.StatusBar) {
         StatusBar.styleDefault();
       }
+
+      $rootScope.otherUsersLocations = new Array();
     });
   })
 

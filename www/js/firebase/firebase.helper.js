@@ -22,28 +22,62 @@ angular.module('firebase.helper', ['firebase', 'firebase.utils', 'angularGeoFire
     }
   })
 
-  .service('fbGeoService', function (fbutil, $firebaseArray, $geofire) {
+  .service('fbGeoService', function (fbutil, $firebaseArray, $geofire, $rootScope) {
+
     this.set = function (auth, location) {
       var authData = auth.$getAuth();
-      console.log(authData.uid.toString());
       var geo = $geofire(fbutil.ref("locations/"));
       geo.$set(authData.uid.toString(), location);
     };
 
-    this.get = function(auth){
+    this.get = function (auth) {
       var authData = auth.$getAuth();
       var geo = $geofire(fbutil.ref("locations/"));
-      geo.$get(authData.uid.toString()).then(function(location){
+      geo.$get(authData.uid.toString()).then(function (location) {
         if (location === null) {
           console.log("Provided key is not in GeoFire");
         }
         else {
           console.log("Provided key has a location of " + location);
         }
-      }, function(error) {
+      }, function (error) {
         console.log("Error: " + error);
       });
     };
+
+    //center: [37.785584, -122.39923],
+    //radius: 10
+
+    this.queryLocation = function (center, radius, maxDistance) {
+
+      var locations = $geofire(fbutil.ref("/locations"));
+      var locationsQuery = locations.$query({
+        center: center,
+        radius: radius
+      });
+
+
+      var locationQueryCallback = locationsQuery.on("key_entered", "SEARCH:KEY_ENTERED");
+      var locationQueryCallback1 = locationsQuery.on("key_moved", "SEARCH:KEY_MOVED");
+
+      $rootScope.$on("SEARCH:KEY_ENTERED", function (event, key, location, distance) {
+        console.log("KEY ENTERED FOUND");
+        $rootScope.otherUsersLocations.push({userId: key, location: location});
+        // Cancel the query if the distance is > 5 km
+        if (distance > maxDistance) {
+          locationQueryCallback.cancel();
+        }
+      });
+
+      $rootScope.$on("SEARCH:KEY_MOVED", function (event, key, location, distance) {
+        console.log("KEY MOVED FOUND");
+        // Cancel the query if the distance is > 5 km
+        if (distance > maxDistance) {
+          locationQueryCallback1.cancel();
+        }
+      });
+    };
+
 
     //this.queryR = function (auth) {
     //  var authData = auth.$getAuth();
