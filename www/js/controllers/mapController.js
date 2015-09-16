@@ -7,7 +7,15 @@ angular.module('mapChat.controller', ['firebase.helper', 'firebase.utils'])
             $ionicModal,
             $ionicPopup,
             getCurrentLocation,
-            $rootScope) {
+            $rootScope,
+            fbGeoService) {
+
+    var center = [37.953757, -122.076692];
+    var radius = 10;
+    var maxDistance = 12;
+
+    fbGeoService.queryLocation(center, radius, maxDistance);
+
 
     $scope.centerMarkIcon = {
       iconUrl: 'img/ping.png',
@@ -17,7 +25,7 @@ angular.module('mapChat.controller', ['firebase.helper', 'firebase.utils'])
       //icon: 'coffee',
       //markerColor: 'red'
       //markerColor: 'red'
-    }
+    };
 
 
     $scope.addMarkers = function (current_location) {
@@ -28,7 +36,11 @@ angular.module('mapChat.controller', ['firebase.helper', 'firebase.utils'])
       for (i = 0; i < otherUsers.length; i++) {
         var key = 'm' + i;
         var location = otherUsers[i].location;
-        markers[key] = {lat: location[0], lng: location[1], message: "I am " + key};
+        markers[key] = {
+          lat: location[0],
+          lng: location[1],
+          message: "I am " + key
+        };
       }
       //add center marker's icon
       markers['center'] = {
@@ -41,18 +53,19 @@ angular.module('mapChat.controller', ['firebase.helper', 'firebase.utils'])
     };
 
     $scope.$on("$stateChangeSuccess", function () {
-      $scope.getCurrentPosition1 = function () {
+      $scope.initMap = function () {
         getCurrentLocation.then(function (current_position) {
           var location = current_position.coords;
           $scope.lat = location.latitude;
           $scope.lng = location.longitude;
           $scope.addMarkers(location);
-          setMap();
+          $scope.setMap();
         });
       };
 
-      $scope.getCurrentPosition1();
-      function setMap() {
+      $scope.initMap();
+
+      $scope.setMap = function () {
         $scope.map = {
           defaults: {
             tileLayer: 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
@@ -72,13 +85,17 @@ angular.module('mapChat.controller', ['firebase.helper', 'firebase.utils'])
             zoom: 16
           }
         };
-      }
+      };
 
 
       //$scope.centerMapToCurrentLocation();
       //$scope.watchCurrentPosition();
     });
 
+
+    $scope.locate = function () {
+      $scope.setMap();
+    };
 
     $scope.centerMapToCurrentLocation = function () {
       getCurrentLocation.then(function (current_position) {
@@ -157,8 +174,7 @@ angular.module('mapChat.controller', ['firebase.helper', 'firebase.utils'])
   }
 )
 
-  .
-  controller('AccountCtrl', function ($scope, $state, Auth) {
+  .controller('AccountCtrl', function ($scope, $state, Auth) {
     $scope.login = function (email, pass) {
       $scope.err = null;
       Auth.$authWithPassword({email: email, password: pass}, {rememberMe: true})
@@ -218,7 +234,6 @@ angular.module('mapChat.controller', ['firebase.helper', 'firebase.utils'])
   })
 
   .controller('AddLocationCtrl', function ($rootScope, $scope, Auth, fbGeoService) {
-
     //var center = [37.785584, -122.39923];
 
     var center = [37.953757, -122.076692];
@@ -226,8 +241,6 @@ angular.module('mapChat.controller', ['firebase.helper', 'firebase.utils'])
     var maxDistance = 12;
 
     fbGeoService.queryLocation(center, radius, maxDistance);
-
-    fbGeoService.get(Auth);
 
     //DEBUG PURPOSE, REMOVE WHOLE SECTION LATER!
     var authData = Auth.$getAuth();
@@ -242,8 +255,7 @@ angular.module('mapChat.controller', ['firebase.helper', 'firebase.utils'])
         fbGeoService.get(Auth);
       };
     }
-  })
-;
+  });
 
 
 

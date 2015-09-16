@@ -47,17 +47,17 @@ angular.module('mapChat', ['ionic', 'mapChat.controller','leaflet-directive', 'n
             controller: 'AccountCtrl'
           }
         }
-      })
-
-      .state('app.addLocation', {
-        url: "/addLocation",
-        views: {
-          'menuContent' :{
-            templateUrl: "templates/temp_input_location.html",
-            controller: 'AddLocationCtrl'
-          }
-        }
       });
+
+      //.state('app.addLocation', {
+      //  url: "/addLocation",
+      //  views: {
+      //    'menuContent' :{
+      //      templateUrl: "templates/temp_input_location.html",
+      //      controller: 'AddLocationCtrl'
+      //    }
+      //  }
+      //});
 
 
 
