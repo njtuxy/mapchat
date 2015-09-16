@@ -9,87 +9,50 @@ angular.module('mapChat.controller', ['firebase.helper', 'firebase.utils'])
             getCurrentLocation,
             $rootScope) {
 
-    /**
-     * Once state loaded, get put map on scope.
-     */
+    $scope.centerMarkIcon = {
+      iconUrl: 'img/ping.png',
+      //iconSize:     [38, 95], // size of the icon
+      iconAnchor: [28, 13] // point of the icon which will
+      //type: 'awesomeMarker',
+      //icon: 'coffee',
+      //markerColor: 'red'
+      //markerColor: 'red'
+    }
 
-      //angular.extend($scope, {
-      //  defaults: {
-      //    tileLayer: 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-      //    maxZoom: 18,
-      //    zoomControlPosition: 'bottomleft'
-      //  },
-      //
-      //  kabam: {
-      //    lat: 37.782287,
-      //    lng: -122.400634,
-      //    zoom: 15
-      //  },
-      //  markers: {}
-      //});
 
-      $scope.addMarkers = function () {
-        console.log('in add Marker function');
-        //Read other users' locations, and create markers on their locations.
-        //Can be extended, more features can be added to this function.
-        var otherUsers = $rootScope.otherUsersLocations;
-        var markers = {};
-        for (i = 0; i < otherUsers.length; i++) {
-          var key = 'm' + i;
-          var location = otherUsers[i].location;
-          markers[key] = {lat: location[0], lng: location[1], message: "I am " + key};
-        }
-        $scope.markers = markers;
+    $scope.addMarkers = function (current_location) {
+      //Read other users' locations, and create markers on their locations.
+      //Can be extended, more features can be added to this function.
+      var otherUsers = $rootScope.otherUsersLocations;
+      var markers = {};
+      for (i = 0; i < otherUsers.length; i++) {
+        var key = 'm' + i;
+        var location = otherUsers[i].location;
+        markers[key] = {lat: location[0], lng: location[1], message: "I am " + key};
+      }
+      //add center marker's icon
+      markers['center'] = {
+        lat: current_location.latitude,
+        lng: current_location.longitude,
+        message: "I am " + key,
+        icon: $scope.centerMarkIcon
       };
-      //
-      //$scope.addMarkers();
+      $scope.markers = markers;
+    };
 
     $scope.$on("$stateChangeSuccess", function () {
-      //angular.extend($scope, {
-      //  defaults: {
-      //    tileLayer: 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-      //    maxZoom: 18,
-      //    zoomControlPosition: 'bottomleft'
-      //  },
-      //
-      //  kabam: {
-      //    lat: 37.782287,
-      //    lng: -122.400634,
-      //    zoom: 15
-      //  },
-      //  markers: {}
-      //});
-
-      //$scope.addMarkers = function () {
-      //  //Read other users' locations, and create markers on their locations.
-      //  //Can be extended, more features can be added to this function.
-      //  var otherUsers = $rootScope.otherUsersLocations;
-      //  var markers = {};
-      //  for (i = 0; i < otherUsers.length; i++) {
-      //    var key = 'm' + i;
-      //    var location = otherUsers[i].location;
-      //    markers[key] = {lat: location[0], lng: location[1], message: "I am " + key};
-      //  }
-      //  $scope.markers = markers;
-      //
-      //};
-      //
-      //$scope.addMarkers();
-
-      //var lat, lng;
-
       $scope.getCurrentPosition1 = function () {
         getCurrentLocation.then(function (current_position) {
           var location = current_position.coords;
           $scope.lat = location.latitude;
           $scope.lng = location.longitude;
-          $scope.addMarkers();
-          setMap1();
+          $scope.addMarkers(location);
+          setMap();
         });
       };
 
       $scope.getCurrentPosition1();
-      function setMap1() {
+      function setMap() {
         $scope.map = {
           defaults: {
             tileLayer: 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
@@ -116,36 +79,6 @@ angular.module('mapChat.controller', ['firebase.helper', 'firebase.utils'])
       //$scope.watchCurrentPosition();
     });
 
-    function setMap(location) {
-      var lat = location.latitude;
-      var lng = location.longitude;
-
-      //Need to update the service to new one!
-      //geoFireService.set('location', [lat, lng]);
-
-      $scope.map.center = {
-        lat: lat,
-        lng: lng,
-        zoom: 16
-      };
-
-      $scope.map.markers[0] = {
-        lat: lat,
-        lng: lng,
-        message: "<div ng-include src=\"'templates/marker/marker_popup.html'\"></div>",
-        focus: true,
-        draggable: false,
-        icon: {
-          iconUrl: 'img/ping.png',
-          //iconSize:     [38, 95], // size of the icon
-          iconAnchor: [28, 13] // point of the icon which will
-          //type: 'awesomeMarker',
-          //icon: 'coffee',
-          //markerColor: 'red'
-          //markerColor: 'red'
-        }
-      }
-    }
 
     $scope.centerMapToCurrentLocation = function () {
       getCurrentLocation.then(function (current_position) {
@@ -224,7 +157,8 @@ angular.module('mapChat.controller', ['firebase.helper', 'firebase.utils'])
   }
 )
 
-  .controller('AccountCtrl', function ($scope, $state, Auth) {
+  .
+  controller('AccountCtrl', function ($scope, $state, Auth) {
     $scope.login = function (email, pass) {
       $scope.err = null;
       Auth.$authWithPassword({email: email, password: pass}, {rememberMe: true})
@@ -287,7 +221,7 @@ angular.module('mapChat.controller', ['firebase.helper', 'firebase.utils'])
 
     //var center = [37.785584, -122.39923];
 
-    var center = [37.953757,-122.076692];
+    var center = [37.953757, -122.076692];
     var radius = 10;
     var maxDistance = 12;
 
@@ -310,3 +244,6 @@ angular.module('mapChat.controller', ['firebase.helper', 'firebase.utils'])
     }
   })
 ;
+
+
+
