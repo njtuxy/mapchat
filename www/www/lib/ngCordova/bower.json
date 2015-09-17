@@ -42,14 +42,5 @@
     "angular": ">= 1.2.23",
     "angular-mocks": ">= 1.2.23",
     "jquery": "~2.1.1"
-  },
-  "_release": "0.1.20-alpha",
-  "_resolution": {
-    "type": "version",
-    "tag": "v0.1.20-alpha",
-    "commit": "bb677e1848feaffbab8f93c0de216dc4cbea1f06"
-  },
-  "_source": "git://github.com/driftyco/ng-cordova.git",
-  "_target": "~0.1.20-alpha",
-  "_originalSource": "ngCordova"
+  }
 }

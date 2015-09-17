@@ -8,7 +8,9 @@ angular.module('mapChat.controller', ['firebase.helper', 'firebase.utils'])
             $ionicPopup,
             getCurrentLocation,
             $rootScope,
-            fbGeoService) {
+            fbGeoService,
+            Auth,
+            fbutil) {
 
     var center = [37.953757, -122.076692];
     var radius = 10;
@@ -16,6 +18,64 @@ angular.module('mapChat.controller', ['firebase.helper', 'firebase.utils'])
 
     fbGeoService.queryLocation(center, radius, maxDistance);
 
+
+    //MAP VIEW ENTERY POINT
+    $scope.$on("$stateChangeSuccess", function () {
+      $scope.initMap = function () {
+        getCurrentLocation.then(function (current_position) {
+          var location = current_position.coords;
+          $scope.lat = location.latitude;
+          $scope.lng = location.longitude;
+          $scope.addMarkers(location);
+          $scope.setMap();
+        });
+      };
+
+      $scope.initMap();
+    });
+
+    $scope.listenToNewMessage = function () {
+      console.log('in listent to new message scope');
+      var messageRef = fbutil.ref("users/" + Auth.$getAuth().uid + "/messages");
+      messageRef.limitToLast(1).on('child_added', function (snapshot) {
+        console.log('NEW CHILD FOUND! ' + snapshot.val().message);
+        var data = snapshot.val();
+        $rootScope.incomingMessageFound = true;
+        $rootScope.sender = data.sender;
+        $rootScope.message = data.message;
+        console.log($rootScope.message);
+      });
+    };
+
+    //$scope.$watch('message', function(newValue, oldValue) {
+    //  console.log('GOT NEW MESSAGE ' + newValue);
+    //  $scope.message = newValue;
+    //});
+
+
+    $scope.listenToNewMessage();
+
+    $scope.setMap = function () {
+      $scope.map = {
+        defaults: {
+          tileLayer: 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+          maxZoom: 18,
+          zoomControlPosition: 'bottomleft'
+        },
+        markers: $scope.markers,
+        events: {
+          map: {
+            enable: ['context'],
+            logic: 'emit'
+          }
+        },
+        center: {
+          lat: $scope.lat,
+          lng: $scope.lng,
+          zoom: 10
+        }
+      };
+    };
 
     $scope.centerMarkIcon = {
       iconUrl: 'img/ping.png',
@@ -53,45 +113,6 @@ angular.module('mapChat.controller', ['firebase.helper', 'firebase.utils'])
       $scope.markers = markers;
     };
 
-    $scope.$on("$stateChangeSuccess", function () {
-      $scope.initMap = function () {
-        getCurrentLocation.then(function (current_position) {
-          var location = current_position.coords;
-          $scope.lat = location.latitude;
-          $scope.lng = location.longitude;
-          $scope.addMarkers(location);
-          $scope.setMap();
-        });
-      };
-
-      $scope.initMap();
-
-      $scope.setMap = function () {
-        $scope.map = {
-          defaults: {
-            tileLayer: 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-            maxZoom: 18,
-            zoomControlPosition: 'bottomleft'
-          },
-          markers: $scope.markers,
-          events: {
-            map: {
-              enable: ['context'],
-              logic: 'emit'
-            }
-          },
-          center: {
-            lat: $scope.lat,
-            lng: $scope.lng,
-            zoom: 10
-          }
-        };
-      };
-
-
-      //$scope.centerMapToCurrentLocation();
-      //$scope.watchCurrentPosition();
-    });
 
 
     $scope.locate = function () {
@@ -150,27 +171,27 @@ angular.module('mapChat.controller', ['firebase.helper', 'firebase.utils'])
       //  console.log(navigator.geolocation.getCurrentPosition(success, error, options));
       //}
 
-      var id, options;
-
-      function success(pos) {
-        var crd = pos.coords;
-        console.log("getting to new location!");
-        setMap(crd);
-      }
-
-      function error(err) {
-        console.warn('ERROR(' + err.code + '): ' + err.message);
-      }
-
-      options = {
-        enableHighAccuracy: false,
-        timeout: 1000,
-        maximumAge: 0
-      };
-
-      id = navigator.geolocation.watchPosition(success, error, options);
-
-      console.log(id);
+      //var id, options;
+      //
+      //function success(pos) {
+      //  var crd = pos.coords;
+      //  console.log("getting to new location!");
+      //  setMap(crd);
+      //}
+      //
+      //function error(err) {
+      //  console.warn('ERROR(' + err.code + '): ' + err.message);
+      //}
+      //
+      //options = {
+      //  enableHighAccuracy: false,
+      //  timeout: 1000,
+      //  maximumAge: 0
+      //};
+      //
+      //id = navigator.geolocation.watchPosition(success, error, options);
+      //
+      //console.log(id);
     }
   }
 )
@@ -228,7 +249,7 @@ angular.module('mapChat.controller', ['firebase.helper', 'firebase.utils'])
       myPopup.then(function (res) {
         //console.log($scope.messageToBeSent);
         fbMessageService.sendMessage(Auth, $scope.userId, res);
-        console.log('Tapped!'+ $scope.userId, res);
+        console.log('Tapped!' + $scope.userId, res);
       });
 
       $timeout(function () {
