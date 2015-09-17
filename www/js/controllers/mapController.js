@@ -36,10 +36,11 @@ angular.module('mapChat.controller', ['firebase.helper', 'firebase.utils'])
       for (i = 0; i < otherUsers.length; i++) {
         var key = 'm' + i;
         var location = otherUsers[i].location;
+        var userId = otherUsers[i].userId;
         markers[key] = {
           lat: location[0],
           lng: location[1],
-          message: "<div ng-include=\"'templates/marker/marker_popup.html'\" onload=\"type = " + "'" + key + "'" + "\"></div>",
+          message: "<div ng-include=\"'templates/marker/marker_popup.html'\" onload=\"type = " + "'" + userId + "'" + "\"></div>",
         };
       }
       //add center marker's icon
@@ -200,36 +201,38 @@ angular.module('mapChat.controller', ['firebase.helper', 'firebase.utils'])
 
     //Triggered on a button click, or some other target
     $scope.showPopup = function () {
-      console.log($scope.type);
       $scope.data = {};
+
       // An elaborate, custom popup
       var myPopup = $ionicPopup.show({
-        template: '<input type="password" ng-model="data.wifi">',
-        title: 'Enter Wi-Fi Password',
-        subTitle: 'Please use normal things',
+        template: '<input type="text" ng-model="data.message">',
+        title: $scope.type,
+        subTitle: 'Send a message',
         scope: $scope,
         buttons: [
           {text: 'Cancel'},
           {
-            text: '<b>Save</b>',
+            text: '<b>Send</b>',
             type: 'button-positive',
             onTap: function (e) {
-              if (!$scope.data.wifi) {
+              if (!$scope.data.message) {
                 //don't allow the user to close unless he enters wifi password
                 e.preventDefault();
               } else {
-                return $scope.data.wifi;
+                return $scope.data.message;
               }
             }
           }
         ]
       });
       myPopup.then(function (res) {
+        //console.log($scope.messageToBeSent);
         console.log('Tapped!', res);
       });
+      
       $timeout(function () {
         myPopup.close(); //close the popup after 3 seconds for some reason
-      }, 3000);
+      }, 10000);
     };
   });
 
