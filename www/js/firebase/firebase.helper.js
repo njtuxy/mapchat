@@ -6,21 +6,49 @@ angular.module('firebase.helper', ['firebase', 'firebase.utils', 'angularGeoFire
     return $firebaseAuth(fbutil.ref());
   })
 
-  .service('geoFireService', function (fbutil, $geofire) {
-    var geo = $geofire(fbutil.ref('users'));
+  .service('fbMessageService', function (fbutil, $firebaseArray) {
+    this.sendMessage = function (auth, receiver_uid, message) {
+      var authData = auth.$getAuth();
+      if (authData) {
+        var userReference = fbutil.ref("users/"+ receiver_uid);
+        var syncArray = $firebaseArray(userReference.child("messages"));
+        console.log('debugg....');
+        console.log(authData.uid);
+        console.log(message);
+        syncArray.$add({sender: authData.uid, message: message}).then(function () {
+          console.log('message sent');
+        });
+      }
 
-    this.set = function (key, location) {
-      return geo.$set(key, location);
-    };
-
-    this.get = function (key) {
-      return geo.$get(key);
-    };
-
-    this.query = function (center, radius) {
-      return geo.$query(center, radius)
     }
   })
+
+//$scope.sendMessage = function (name, text, uid_of_reciever) {
+//  var authData = $rootScope.fbAuth.$getAuth();
+//  if (authData) {
+//    var userReference = $rootScope.fb.child("users/" + uid_of_reciever);
+//    var syncArray = $firebaseArray(userReference.child("messages"));
+//    syncArray.$add({name: name, text: text}).then(function () {
+//    });
+//  } else {
+//  }
+//};
+
+//.service('geoFireService', function (fbutil, $geofire) {
+  //  var geo = $geofire(fbutil.ref('users'));
+  //
+  //  this.set = function (key, location) {
+  //    return geo.$set(key, location);
+  //  };
+  //
+  //  this.get = function (key) {
+  //    return geo.$get(key);
+  //  };
+  //
+  //  this.query = function (center, radius) {
+  //    return geo.$query(center, radius)
+  //  }
+  //})
 
   .service('fbGeoService', function (fbutil, $firebaseArray, $geofire, $rootScope) {
 
@@ -44,9 +72,6 @@ angular.module('firebase.helper', ['firebase', 'firebase.utils', 'angularGeoFire
         console.log("Error: " + error);
       });
     };
-
-    //center: [37.785584, -122.39923],
-    //radius: 10
 
     this.queryLocation = function (center, radius, maxDistance) {
 
@@ -99,20 +124,16 @@ angular.module('firebase.helper', ['firebase', 'firebase.utils', 'angularGeoFire
     //
     //  return query;
     //}
-
-
   })
-  //.controller('AddLocationCtrl', function ($scope, Auth, fbutil, $firebaseArray, $geofire) {
-  //  $scope.addLocation = function (lat, lng) {
-  //    var lat_i = parseInt(lat);
-  //    var lng_i = parseInt(lng);
-  //    var authData = Auth.$getAuth();
-  //    if (authData) {
-  //      var geo = $geofire(fbutil.ref("users/" + authData.uid));
-  //      //var userReference = fbutil.ref("users/" + authData.uid);
-  //      //var syncArray = $firebaseArray(userReference.child("messages"));
-  //      geo.$set('location', [lat_i, lng_i])
-  //    }
-  //  }
-
-;
+//.controller('AddLocationCtrl', function ($scope, Auth, fbutil, $firebaseArray, $geofire) {
+//  $scope.addLocation = function (lat, lng) {
+//    var lat_i = parseInt(lat);
+//    var lng_i = parseInt(lng);
+//    var authData = Auth.$getAuth();
+//    if (authData) {
+//      var geo = $geofire(fbutil.ref("users/" + authData.uid));
+//      //var userReference = fbutil.ref("users/" + authData.uid);
+//      //var syncArray = $firebaseArray(userReference.child("messages"));
+//      geo.$set('location', [lat_i, lng_i])
+//    }
+//  }

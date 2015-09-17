@@ -40,7 +40,7 @@ angular.module('mapChat.controller', ['firebase.helper', 'firebase.utils'])
         markers[key] = {
           lat: location[0],
           lng: location[1],
-          message: "<div ng-include=\"'templates/marker/marker_popup.html'\" onload=\"type = " + "'" + userId + "'" + "\"></div>",
+          message: "<div ng-include=\"'templates/marker/marker_popup.html'\" onload=\"userId = " + "'" + userId + "'" + "\"></div>",
         };
       }
       //add center marker's icon
@@ -83,7 +83,7 @@ angular.module('mapChat.controller', ['firebase.helper', 'firebase.utils'])
           center: {
             lat: $scope.lat,
             lng: $scope.lng,
-            zoom: 16
+            zoom: 10
           }
         };
       };
@@ -194,7 +194,7 @@ angular.module('mapChat.controller', ['firebase.helper', 'firebase.utils'])
     }
   })
 
-  .controller('MarkerController', function ($scope, $ionicPopup, $timeout) {
+  .controller('MarkerController', function ($scope, $ionicPopup, $timeout, fbMessageService, Auth) {
     $scope.greet = function (user) {
       alert("Greet");
     };
@@ -206,7 +206,7 @@ angular.module('mapChat.controller', ['firebase.helper', 'firebase.utils'])
       // An elaborate, custom popup
       var myPopup = $ionicPopup.show({
         template: '<input type="text" ng-model="data.message">',
-        title: $scope.type,
+        title: $scope.userId,
         subTitle: 'Send a message',
         scope: $scope,
         buttons: [
@@ -227,9 +227,10 @@ angular.module('mapChat.controller', ['firebase.helper', 'firebase.utils'])
       });
       myPopup.then(function (res) {
         //console.log($scope.messageToBeSent);
-        console.log('Tapped!', res);
+        fbMessageService.sendMessage(Auth, $scope.userId, res);
+        console.log('Tapped!'+ $scope.userId, res);
       });
-      
+
       $timeout(function () {
         myPopup.close(); //close the popup after 3 seconds for some reason
       }, 10000);
