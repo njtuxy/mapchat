@@ -39,7 +39,7 @@ angular.module('mapChat.controller', ['firebase.helper', 'firebase.utils'])
         markers[key] = {
           lat: location[0],
           lng: location[1],
-          message: "I am " + key
+          message: "<div ng-include=\"'templates/marker/marker_popup.html'\" onload=\"type = " + "'" + key + "'" + "\"></div>",
         };
       }
       //add center marker's icon
@@ -200,8 +200,8 @@ angular.module('mapChat.controller', ['firebase.helper', 'firebase.utils'])
 
     //Triggered on a button click, or some other target
     $scope.showPopup = function () {
+      console.log($scope.type);
       $scope.data = {};
-
       // An elaborate, custom popup
       var myPopup = $ionicPopup.show({
         template: '<input type="password" ng-model="data.wifi">',
@@ -231,31 +231,31 @@ angular.module('mapChat.controller', ['firebase.helper', 'firebase.utils'])
         myPopup.close(); //close the popup after 3 seconds for some reason
       }, 3000);
     };
-  })
-
-  .controller('AddLocationCtrl', function ($rootScope, $scope, Auth, fbGeoService) {
-    //var center = [37.785584, -122.39923];
-
-    var center = [37.953757, -122.076692];
-    var radius = 10;
-    var maxDistance = 12;
-
-    fbGeoService.queryLocation(center, radius, maxDistance);
-
-    //DEBUG PURPOSE, REMOVE WHOLE SECTION LATER!
-    var authData = Auth.$getAuth();
-    $scope.currentLoginAs = authData.uid;
-    if (authData) {
-      $scope.currentLoginAs = authData.uid;
-      $scope.addLocation = function (lat, lng) {
-        fbGeoService.set(Auth, [parseFloat(lat), parseFloat(lng)]);
-        console.log('location added!');
-      };
-      $scope.getLocation = function () {
-        fbGeoService.get(Auth);
-      };
-    }
   });
+
+//.controller('AddLocationCtrl', function ($rootScope, $scope, Auth, fbGeoService) {
+//  //var center = [37.785584, -122.39923];
+//
+//  var center = [37.953757, -122.076692];
+//  var radius = 10;
+//  var maxDistance = 12;
+//
+//  fbGeoService.queryLocation(center, radius, maxDistance);
+//
+//  //DEBUG PURPOSE, REMOVE WHOLE SECTION LATER!
+//  var authData = Auth.$getAuth();
+//  $scope.currentLoginAs = authData.uid;
+//  if (authData) {
+//    $scope.currentLoginAs = authData.uid;
+//    $scope.addLocation = function (lat, lng) {
+//      fbGeoService.set(Auth, [parseFloat(lat), parseFloat(lng)]);
+//      console.log('location added!');
+//    };
+//    $scope.getLocation = function () {
+//      fbGeoService.get(Auth);
+//    };
+//  }
+//});
 
 
 
