@@ -38,12 +38,10 @@ angular.module('mapChat.controller', ['firebase.helper', 'firebase.utils'])
       console.log('in listent to new message scope');
       var messageRef = fbutil.ref("users/" + Auth.$getAuth().uid + "/messages");
       messageRef.limitToLast(1).on('child_added', function (snapshot) {
-        console.log('NEW CHILD FOUND! ' + snapshot.val().message);
         var data = snapshot.val();
-        $rootScope.incomingMessageFound = true;
-        $rootScope.sender = data.sender;
-        $rootScope.message = data.message;
-        console.log($rootScope.message);
+        $scope.incomingMessageFound = true;
+        $scope.sender = data.sender;
+        $scope.incomingMessage = data.message;
       });
     };
 

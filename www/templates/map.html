@@ -8,8 +8,16 @@
     <button ng-click="locate();" class="button button-icon icon ion-pinpoint"></button>
   </ion-nav-buttons>
 
+
+
   <ion-content data-tap-disabled="true">
-    <leaflet defaults="map.defaults" center="map.center" markers="map.markers" ng-if="map">
+    <div class="balanced-bg" ng-if="incomingMessageFound">
+      <Strong>Yan:</Strong> {{incomingMessage}}
+    </div>
+    <div style="height: 600px; width: 400px">
+      <leaflet defaults="map.defaults" center="map.center" markers="map.markers" ng-if="map">
+    </div>
+
       <!--<leaflet defaults="map.defaults" center="map.center" markers="map.markers" ng-if="map">-->
     <!--<leaflet defaults="map.defaults" center="map.center" markers="map.markers"></leaflet>-->
   </ion-content>
