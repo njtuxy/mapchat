@@ -14,6 +14,9 @@
     <div class="balanced-bg" ng-if="incomingMessageFound">
       <Strong>Yan:</Strong> {{incomingMessage}}
     </div>
+    <div>
+      Current location: lat: {{debuglat}} lng: {{debuglng}}
+    </div>
     <div style="height: 600px; width: 400px">
       <leaflet defaults="map.defaults" center="map.center" markers="map.markers" ng-if="map">
     </div>

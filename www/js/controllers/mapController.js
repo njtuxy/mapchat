@@ -50,8 +50,53 @@ angular.module('mapChat.controller', ['firebase.helper', 'firebase.utils'])
     //  $scope.message = newValue;
     //});
 
+    $scope.watchCurrentPosition = function () {
+      var watchOptions = {
+        frequency: 1000,
+        timeout: 3000,
+        enableHighAccuracy: false // may cause errors if true
+      };
+
+      var watch = $cordovaGeolocation.watchPosition(watchOptions);
+
+      watch.then(
+        function () {
+        },
+        function (err) {
+          console.log(err);
+        },
+        function (location) {
+          console.log('getting current location');
+          location = location.coords;
+          console.log(location);
+          $scope.debuglat = location.latitude;
+          $scope.debuglng = location.longitude;
+        });
+
+      //geoWatchLocation.clearWatch();
+
+      //var options = {
+      //  enableHighAccuracy: true,
+      //  timeout: 5000,
+      //  maximumAge: 0
+      //};
+      //
+      //function success(pos) {
+      //  var location = pos.coords;
+      //  console.log('getting current location:');
+      //  console.log(location)
+      //}
+      //
+      //function error(err) {
+      //  console.warn('ERROR(' + err.code + '): ' + err.message);
+      //}
+      //
+      //id = navigator.geolocation.watchPosition(success, error, options);
+    };
+
 
     $scope.listenToNewMessage();
+    $scope.watchCurrentPosition();
 
     $scope.setMap = function () {
       $scope.map = {
@@ -112,7 +157,6 @@ angular.module('mapChat.controller', ['firebase.helper', 'firebase.utils'])
     };
 
 
-
     $scope.locate = function () {
       $scope.setMap();
     };
@@ -123,76 +167,8 @@ angular.module('mapChat.controller', ['firebase.helper', 'firebase.utils'])
         setMap(location);
       })
     };
+  })
 
-    $scope.watchCurrentPosition = function () {
-      //  var watchOptions = {
-      //    frequency: 1000,
-      //    timeout: 3000,
-      //    enableHighAccuracy: false // may cause errors if true
-      //  };
-      //
-      //  var watch = $cordovaGeolocation.watchPosition(watchOptions);
-      //
-      //  watch.then(
-      //    function () {
-      //    },
-      //    function (err) {
-      //      console.log("++++++++++++++++++++++++++++++++++++++++");
-      //      console.log(err);
-      //      console.log("++++++++++++++++++++++++++++++++++++++++");
-      //    },
-      //    function (position) {
-      //      console.log(position);
-      //      setMap(position.coords);
-      //    });
-      //
-      //  //geoWatchLocation.clearWatch();
-
-      //  var options = {
-      //    enableHighAccuracy: true,
-      //    timeout: 5000,
-      //    maximumAge: 0
-      //  };
-      //
-      //  function success(pos) {
-      //    var crd = pos.coords;
-      //    console.log('Your current position is:');
-      //    console.log('Latitude : ' + crd.latitude);
-      //    console.log('Longitude: ' + crd.longitude);
-      //    console.log('More or less ' + crd.accuracy + ' meters.');
-      //  };
-      //
-      //  function error(err) {
-      //    console.warn('ERROR(' + err.code + '): ' + err.message);
-      //  };
-      //
-      //  console.log(navigator.geolocation.getCurrentPosition(success, error, options));
-      //}
-
-      //var id, options;
-      //
-      //function success(pos) {
-      //  var crd = pos.coords;
-      //  console.log("getting to new location!");
-      //  setMap(crd);
-      //}
-      //
-      //function error(err) {
-      //  console.warn('ERROR(' + err.code + '): ' + err.message);
-      //}
-      //
-      //options = {
-      //  enableHighAccuracy: false,
-      //  timeout: 1000,
-      //  maximumAge: 0
-      //};
-      //
-      //id = navigator.geolocation.watchPosition(success, error, options);
-      //
-      //console.log(id);
-    }
-  }
-)
 
   .controller('AccountCtrl', function ($scope, $state, Auth) {
     $scope.login = function (email, pass) {
