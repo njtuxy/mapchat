@@ -1,7 +1,7 @@
 <ion-view cache-view="false" title="Map">
 
   <ion-nav-buttons side="left">
-    <button menu-toggle="left"class="button button-icon icon ion-navicon"></button>
+    <button menu-toggle="left" class="button button-icon icon ion-navicon"></button>
   </ion-nav-buttons>
 
   <ion-nav-buttons side="right">
@@ -9,9 +9,8 @@
   </ion-nav-buttons>
 
 
-
   <ion-content data-tap-disabled="true">
-    <div class="balanced-bg" ng-if="incomingMessageFound">
+    <div class="balanced-bg animate-if" ng-if="incomingMessageFound">
       <Strong>Yan:</Strong> {{incomingMessage}}
     </div>
     <div>
@@ -21,7 +20,7 @@
       <leaflet defaults="map.defaults" center="map.center" markers="map.markers" ng-if="map">
     </div>
 
-      <!--<leaflet defaults="map.defaults" center="map.center" markers="map.markers" ng-if="map">-->
+    <!--<leaflet defaults="map.defaults" center="map.center" markers="map.markers" ng-if="map">-->
     <!--<leaflet defaults="map.defaults" center="map.center" markers="map.markers"></leaflet>-->
   </ion-content>
 

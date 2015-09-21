@@ -115,7 +115,7 @@ angular.module('mapChat.controller', ['firebase.helper', 'firebase.utils'])
         center: {
           lat: $scope.lat,
           lng: $scope.lng,
-          zoom: 10
+          zoom: 18
         }
       };
     };
