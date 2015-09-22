@@ -107,7 +107,7 @@ angular.module('mapChat.controller', ['firebase.helper', 'firebase.utils'])
     $scope.setMap = function () {
       $scope.map = {
         defaults: {
-          tileLayer: 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+          tileLayer: 'http://{s}.tiles.wmflabs.org/bw-mapnik/{z}/{x}/{y}.png',
           maxZoom: 18,
           zoomControlPosition: 'bottomleft'
         },
@@ -150,6 +150,13 @@ angular.module('mapChat.controller', ['firebase.helper', 'firebase.utils'])
           lat: location[0],
           lng: location[1],
           message: "<div ng-include=\"'templates/marker/marker_popup.html'\" onload=\"userId = " + "'" + userId + "'" + "\"></div>",
+          icon: {
+            type: 'awesomeMarker',
+            icon: 'ion-person',
+            prefix: 'ion',
+            markerColor: 'darkgreen'
+          }
+
         };
       }
       //add center marker's icon
