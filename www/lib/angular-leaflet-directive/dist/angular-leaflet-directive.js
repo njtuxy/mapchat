@@ -2061,7 +2061,7 @@ angular.module("leaflet-directive").factory('leafletMapDefaults', ["$q", "leafle
             crs: L.CRS.EPSG3857,
             tileLayer: '//{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
             tileLayerOptions: {
-                attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                attribution: ''
             },
             path: {
                 weight: 10,
@@ -2737,7 +2737,7 @@ angular.module("leaflet-directive").factory('leafletPathsHelpers', ["$rootScope"
         isNumber = leafletHelpers.isNumber,
         isValidPoint = leafletHelpers.isValidPoint,
         $log = leafletLogger;
-        
+
     var availableOptions = [
         // Path options
         'stroke', 'weight', 'color', 'opacity',

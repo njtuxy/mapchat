@@ -1,5 +1,4 @@
 <ion-view cache-view="false" title="Map">
-
   <ion-nav-buttons side="left">
     <button menu-toggle="left" class="button button-icon icon ion-navicon"></button>
   </ion-nav-buttons>
@@ -10,15 +9,16 @@
 
 
   <ion-content data-tap-disabled="true">
-    <div class="balanced-bg animate-if" ng-if="incomingMessageFound">
-      <Strong>Yan:</Strong> {{incomingMessage}}
+    <div style="height: 40px; width: 400px">
+      <div class="chat-item animated fadeInDown" ng-if="incomingMessageFound">
+        <Strong>Yan:</Strong> {{incomingMessage}}
+      </div>
     </div>
-    <div>
-      Current location: lat: {{debuglat}} lng: {{debuglng}}
-    </div>
-    <div style="height: 600px; width: 400px">
+
+    <div style="height: 400px; width: 400px">
       <leaflet defaults="map.defaults" center="map.center" markers="map.markers" ng-if="map">
     </div>
+
 
     <!--<leaflet defaults="map.defaults" center="map.center" markers="map.markers" ng-if="map">-->
     <!--<leaflet defaults="map.defaults" center="map.center" markers="map.markers"></leaflet>-->

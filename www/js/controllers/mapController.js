@@ -6,6 +6,7 @@ angular.module('mapChat.controller', ['firebase.helper', 'firebase.utils'])
             $stateParams,
             $ionicModal,
             $ionicPopup,
+            $timeout,
             getCurrentLocation,
             $rootScope,
             fbGeoService,
@@ -42,6 +43,11 @@ angular.module('mapChat.controller', ['firebase.helper', 'firebase.utils'])
         $scope.incomingMessageFound = true;
         $scope.sender = data.sender;
         $scope.incomingMessage = data.message;
+
+        //$timeout(function () {
+        //  $scope.incomingMessageFound = false; //close the popup after 3 seconds for some reason
+        //  console.log('setting to false');
+        //}, 3000);
       });
     };
 
