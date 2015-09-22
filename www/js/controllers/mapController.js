@@ -163,10 +163,10 @@ angular.module('mapChat.controller', ['firebase.helper', 'firebase.utils'])
       markers['center'] = {
         lat: current_location.latitude,
         lng: current_location.longitude,
-        message: "I am " + key,
+        message: "I am very upset",
         icon: {
           type: 'awesomeMarker',
-          icon: 'ion-model-s',
+          icon: 'ion-sad',
           prefix: 'ion',
           markerColor: 'orange'
         }
