@@ -157,7 +157,12 @@ angular.module('mapChat.controller', ['firebase.helper', 'firebase.utils'])
         lat: current_location.latitude,
         lng: current_location.longitude,
         message: "I am " + key,
-        icon: $scope.centerMarkIcon
+        icon: {
+          type: 'awesomeMarker',
+          icon: 'ion-model-s',
+          prefix: 'ion',
+          markerColor: 'orange'
+        }
       };
       $scope.markers = markers;
     };
