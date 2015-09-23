@@ -22,6 +22,15 @@ $ionicons-font-path: "../lib/ionic/fonts" !default;
 
 
 $calm: #1d4291 !default;
+$light:                           #fff !default;
+$stable:                          #f8f8f8 !default;
+$positive:                        #387ef5 !default;
+$calm:                            #11c1f3 !default;
+$balanced:                        #33cd5f !default;
+$energized:                       #ffc900 !default;
+$assertive:                       #ef473a !default;
+$royal:                           #886aea !default;
+$dark:                            #444 !default;
 
 
 body {
@@ -81,7 +90,7 @@ body {
   color:rgba(255,255,255,0.5);
 }
 .custom-popup .leaflet-popup-tip-container {
-  width:280px;
+  width:90px;
   height:17px;
   padding: 1px;
 }
@@ -90,6 +99,19 @@ body {
   border-right:15px solid transparent;
   border-top:15px solid #2c3e50;
   background:#2c3e50;
+}
+
+//customized ionic popup
+.popup-container {
+  background-color: palegoldenrod;
+}
+
+.popup {
+  border: 5px solid red;
+}
+
+.popup-head {
+  background-color: #009689;
 }
 
 @import "www/lib/ionic/scss/ionic";

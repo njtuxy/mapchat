@@ -121,7 +121,7 @@ angular.module('mapChat.controller', ['firebase.helper', 'firebase.utils'])
         center: {
           lat: $scope.lat,
           lng: $scope.lng,
-          zoom: 18
+          zoom: 8
         }
       };
     };
@@ -218,7 +218,7 @@ angular.module('mapChat.controller', ['firebase.helper', 'firebase.utils'])
 
       // An elaborate, custom popup
       var myPopup = $ionicPopup.show({
-        template: '<input type="text" ng-model="data.message">',
+        templateUrl: 'templates/ionicPopup/chatPopup.html',
         title: $scope.userId,
         subTitle: 'Send a message',
         scope: $scope,
