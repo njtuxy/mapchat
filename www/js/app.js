@@ -3,7 +3,7 @@
 // angular.module is a global place for creating, registering and retrieving Angular modules
 // 'starter' is the name of this angular module example (also set in a <body> attribute in index.html)
 // the 2nd parameter is an array of 'requires'
-angular.module('mapChat', ['ionic', 'mapChat.controller','leaflet-directive', 'ngCordova', 'igTruncate', 'ngAnimate'])
+angular.module('mapChat', ['ionic', 'mapChat.controller','leaflet-directive', 'ngCordova', 'igTruncate', 'ngAnimate', 'oitozero.ngSweetAlert'])
 
   .run(function($ionicPlatform, $rootScope) {
     $ionicPlatform.ready(function() {

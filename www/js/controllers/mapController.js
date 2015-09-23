@@ -11,7 +11,9 @@ angular.module('mapChat.controller', ['firebase.helper', 'firebase.utils'])
             $rootScope,
             fbGeoService,
             Auth,
-            fbutil) {
+            fbutil,
+            SweetAlert,
+            fbMessageService) {
 
     var center = [37.953757, -122.076692];
     var radius = 10;
@@ -43,11 +45,45 @@ angular.module('mapChat.controller', ['firebase.helper', 'firebase.utils'])
         $scope.incomingMessageFound = true;
         $scope.sender = data.sender;
         $scope.incomingMessage = data.message;
+        //SweetAlert.swal(data.sender + " send you a message!", data.message);
 
-        //$timeout(function () {
-        //  $scope.incomingMessageFound = false; //close the popup after 3 seconds for some reason
-        //  console.log('setting to false');
-        //}, 3000);
+        SweetAlert.swal({
+          title: data.sender,
+          text: data.message,
+          type: "info",
+          showCancelButton: true,
+          confirmButtonColor: "#DD6B55",
+          cancelButtonText: "Ignore",
+          confirmButtonText: "Reply",
+          confirmButtonColor: "#33cd5f",
+          closeOnConfirm: false
+        }, function () {
+          //SweetAlert.swal("Deleted!", "Your imaginary file has been deleted.", "success");
+          $scope.reply(data.sender);
+        });
+      });
+    };
+
+
+    $scope.reply = function (sender) {
+      SweetAlert.swal({
+        title: "Send Message to: " + sender,
+        type: "input",
+        showCancelButton: true,
+        closeOnConfirm: true,
+        animation: "pop",
+        //inputPlaceholder: "Greetings!",
+        confirmButtonText: "Send"
+      }, function (inputValue) {
+        if (inputValue === false) return false;
+        if (inputValue === "") {
+          //SweetAlert.swal.showInputError("You need to write something!");
+          console.log('nothing to sent');
+          return false
+        }
+        //console.log('I am text');
+        fbMessageService.sendMessage(Auth, sender, inputValue);
+        //SweetAlert.swal("Nice!", "You wrote: " + inputValue, "success");
       });
     };
 
@@ -99,10 +135,6 @@ angular.module('mapChat.controller', ['firebase.helper', 'firebase.utils'])
       //
       //id = navigator.geolocation.watchPosition(success, error, options);
     };
-
-
-    $scope.listenToNewMessage();
-    $scope.watchCurrentPosition();
 
     $scope.setMap = function () {
       $scope.map = {
@@ -185,6 +217,11 @@ angular.module('mapChat.controller', ['firebase.helper', 'firebase.utils'])
         setMap(location);
       })
     };
+
+    $scope.listenToNewMessage();
+    $scope.watchCurrentPosition();
+
+
   })
 
 
@@ -207,9 +244,32 @@ angular.module('mapChat.controller', ['firebase.helper', 'firebase.utils'])
     }
   })
 
-  .controller('MarkerController', function ($scope, $ionicPopup, $timeout, fbMessageService, Auth) {
+  .controller('MarkerController', function ($scope, $ionicPopup, $timeout, fbMessageService, Auth, SweetAlert) {
     $scope.greet = function (user) {
       alert("Greet");
+    };
+
+    $scope.test = function () {
+      SweetAlert.swal({
+        title: "Send Message to: " + $scope.userId,
+        //text: "Write something interesting:",
+        type: "input",
+        showCancelButton: true,
+        closeOnConfirm: true,
+        animation: "pop",
+        //inputPlaceholder: "Greetings!",
+        confirmButtonText: "Send"
+      }, function (inputValue) {
+        if (inputValue === false) return false;
+        if (inputValue === "") {
+          //SweetAlert.swal.showInputError("You need to write something!");
+          console.log('nothing to sent');
+          return false
+        }
+        //console.log('I am text');
+        fbMessageService.sendMessage(Auth, $scope.userId, inputValue);
+        //SweetAlert.swal("Nice!", "You wrote: " + inputValue, "success");
+      });
     };
 
     //Triggered on a button click, or some other target
