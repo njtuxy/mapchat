@@ -38,7 +38,6 @@ angular.module('mapChat.controller', ['firebase.helper', 'firebase.utils'])
     });
 
     $scope.listenToNewMessage = function () {
-      console.log('in listent to new message scope');
       var messageRef = fbutil.ref("users/" + Auth.$getAuth().uid + "/messages");
       messageRef.limitToLast(1).on('child_added', function (snapshot) {
         var data = snapshot.val();
@@ -78,7 +77,6 @@ angular.module('mapChat.controller', ['firebase.helper', 'firebase.utils'])
         if (inputValue === false) return false;
         if (inputValue === "") {
           //SweetAlert.swal.showInputError("You need to write something!");
-          console.log('nothing to sent');
           return false
         }
         //console.log('I am text');
